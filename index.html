@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pill Bubble Visualization</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #00ff00; /* Chroma key green */
+      width: 100%;
+      height: 100%;
+      position: relative;
+      font-family: Arial, sans-serif;
+    }
+
+    .bubble {
+      position: absolute;
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 999px; /* Pill shape */
+      padding: 10px 25px;
+      font-size: 2.1em;
+      color: #000;
+      text-align: center;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(0) scale(0.8);
+      animation: float 4s ease-out forwards;
+      box-shadow: 0 8px 10px rgba(0,0,0,0.4);
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.8);
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1);
+      }
+      90% {
+        opacity: 1;
+        transform: translateY(-50px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-70px) scale(1.1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  var texts = [
+	"Arthur Leigh Allen",
+	"Richard Gaikowski",
+	"Lawrence Kane",
+	"Ross Sullivan",
+	"Earl Van Best Jr.",
+	"Richard Marshall",
+    "Ted Kaczynski",
+    "Jack Tarrance",
+    "Bruce Davis",
+    "Rick Marshall",
+    "Chester Klingel",
+    "Gary Francis Poste",
+	"William McDuff Andrew",
+	"Radian Theory",
+    "San Francisco, California",
+	"Vallejo, California",
+	"Benicia, California",
+	"Napa, California",
+	"Lake Berryessa",
+	"Lake Herman Road",
+	"Blue Rock Springs",
+	"Washington and Cherry",
+	"December 20, 1968",
+	"July 5, 1969",
+	"September 27, 1969",
+	"October 11, 1969",
+	"Multiple Zodiacs",
+	"Zodiac Hoax",
+	"Copycat Killer",
+	"Law Enforcement Coverup",
+	"Inside Job",
+	"Charles Manson Cult"
+  ];
+  
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      // Pick a random index from 0 to i
+      const j = Math.floor(Math.random() * (i + 1));
+      // Swap elements array[i] and array[j]
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+  
+  var which = texts.length;
+
+  function createBubble() {
+    const bubble = document.createElement("div");
+    bubble.classList.add("bubble");
+	
+	// shuffle after each pass, to minimize repeats.
+	if (which >= texts.length) {
+		texts = shuffle(texts);
+		which = 0;
+	}
+    // bubble.textContent = texts[Math.floor(Math.random() * texts.length)];
+	bubble.textContent = texts[which++];
+
+    document.body.appendChild(bubble);
+
+    // Measure bubble width/height after it's added
+    const rect = bubble.getBoundingClientRect();
+    const bubbleWidth = rect.width;
+    const bubbleHeight = rect.height;
+
+	// Define 10% margins
+    const marginX = window.innerWidth * 0.1;
+    const marginY = window.innerHeight * 0.1;
+    const availableWidth = window.innerWidth - bubbleWidth - 2 * marginX;
+    const availableHeight = window.innerHeight - bubbleHeight - 2 * marginY;
+	
+	// Random position within safe zone
+    const x = marginX + Math.random() * availableWidth;
+    const y = marginY + Math.random() * availableHeight;
+    bubble.style.left = `${x}px`;
+    bubble.style.top = `${y}px`;
+
+    // Remove after animation ends
+    setTimeout(() => bubble.remove(), 4000);
+
+    // Create bubbles at regular intervals
+    setTimeout(createBubble, 200+Math.random()*500);
+
+  }
+
+  createBubble();
+
+  // Optional: click to spawn one instantly
+  document.body.addEventListener("click", createBubble);
+</script>
+
+</body>
+</html>
